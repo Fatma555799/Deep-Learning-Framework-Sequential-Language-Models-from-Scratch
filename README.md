@@ -47,12 +47,12 @@ Deep-Learning-Framework-Sequential-Language-Models-from-Scratch/
 
 ## ✨ Key Concepts Covered
 
-Character-level tokenization
-Embedding layers & neural networks (MLP → WaveNet → GPT)
-Backpropagation & gradient computation
-Batch Normalization and training techniques
-Text generation
-Model evaluation and progressive improvement
+* Character-level tokenization
+* Embedding layers & neural networks (MLP -> WaveNet -> GPT)
+* Backpropagation & gradient computation
+* Batch Normalization and training techniques
+* Text generation
+* Model evaluation and progressive improvement
 
 ## 🛠️ How to Run
 
