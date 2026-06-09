@@ -32,18 +32,20 @@ Deep-Learning-Framework-Sequential-Language-Models-from-Scratch/
 ├── gpt_v2.py                              # More advanced GPT implementation
 └── README.md
 ```
-🚀 Progression
 
-Stage,File,description 
-1,micrograde_from_scratch.ipynb,Building a neural network engine (Autograd) from scratch
-2,makemore1.py,Bigram model using counting and simple Neural Network
-3,build_makemore_mlp.py + mlp*.py,Multi-Layer Perceptron for character prediction
-4,build_makemore_batchnorm.py,"Batch Normalization, better optimization, and training tricks"
-5,build_makemore_backprop_ninja.py,Deep understanding of backpropagation
-6,building_a_wavenet.py,WaveNet architecture (dilated convolutions)
-7,gpt_bigram.py & gpt_v2.py,Transformer-style GPT models
+## 🚀  Progression
 
-✨ Key Concepts Covered
+| Stage | File | What You Learn |
+| :---: | :--- | :--- |
+| **1** | `micrograde_from_scratch.ipynb` | Building a neural network engine (Autograd) from scratch |
+| **2** | `makemore1.py` | Bigram model using counting and simple Neural Network |
+| **3** | `build_makemore_mlp.py` + `mlp*.py` | Multi-Layer Perceptron for character prediction |
+| **4** | `build_makemore_batchnorm.py` | Batch Normalization, better optimization, and training tricks |
+| **5** | `build_makemore_backprop_ninja.py` | Deep understanding of backpropagation |
+| **6** | `building_a_wavenet.py` | WaveNet architecture (dilated convolutions) |
+| **7** | `gpt_bigram.py` & `gpt_v2.py` | Transformer-style GPT models |
+
+## ✨ Key Concepts Covered
 
 Character-level tokenization
 Embedding layers & neural networks (MLP → WaveNet → GPT)
@@ -52,7 +54,7 @@ Batch Normalization and training techniques
 Text generation
 Model evaluation and progressive improvement
 
-🛠️ How to Run
+## 🛠️ How to Run
 
 Clone the repository:
 ```Bash
@@ -69,18 +71,19 @@ python makemore1.py
 # or
 python gpt_v2.py
 ```
-📈 Results
-Each model builds upon the previous one, showing clear improvement in loss and generation quality — from basic Bigram to advanced GPT-style architectures.
-🔮 Future Work (TODO)
+## 📈 Results
 
- Full Transformer (nanoGPT style)
- Training on large Arabic dataset
- Web demo (Streamlit/Gradio)
- Model optimization and inference
+Each model builds upon the previous one, showing clear improvement in loss and generation quality — from basic Bigram to advanced GPT-style architectures.
+
+## 🔮 Future Work (TODO)
+
+- [ ] Full Transformer (nanoGPT style)
+- [ ] Training on large Arabic dataset
+- [ ] Web demo (Streamlit/Gradio)
+- [ ] Model optimization and inference
 
 📚 References & Inspiration
 
-Andrej Karpathy - Neural Networks: Zero to Hero
+[Andrej Karpathy - Neural Networks: Zero to Hero](https://www.youtube.com/playlist?list=PLAqhIrjkxbuWI23v9cThsA9GvCAUhRvKZ)
 
 Built with ❤️ by [Fatma Mansour]
-Learning Deep Learning by building it from scratch.
