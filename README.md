@@ -31,7 +31,7 @@ Deep-Learning-Framework-Sequential-Language-Models-from-Scratch/
 ├── gpt_bigram.py                          # GPT-style Bigram model
 ├── gpt_v2.py                              # More advanced GPT implementation
 └── README.md
-
+```
 🚀 Progression
 
 Stage,File,description 
@@ -55,18 +55,20 @@ Model evaluation and progressive improvement
 🛠️ How to Run
 
 Clone the repository:
-Bash
+```Bash
 git clone https://github.com/Fatma555799/Deep-Learning-Framework-Sequential-Language-Models-from-Scratch.git
 cd Deep-Learning-Framework-Sequential-Language-Models-from-Scratch
+```
 Install dependencies:
-Bash
+```Bash
 pip install torch torchvision torchaudio matplotlib tqdm
+```
 Run any script:
-Bash
+```Bash
 python makemore1.py
 # or
 python gpt_v2.py
-
+```
 📈 Results
 Each model builds upon the previous one, showing clear improvement in loss and generation quality — from basic Bigram to advanced GPT-style architectures.
 🔮 Future Work (TODO)
