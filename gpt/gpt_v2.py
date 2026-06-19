@@ -14,14 +14,17 @@ from tqdm.notebook import tqdm
 import urllib.request
 
 #hyperprameter
-batch_size=32
-block_size=8
-max_iters=3000
-lr=1e-3
+batch_size=64
+block_size=256
+max_iters=5000
+lr=3e-4
 device='cuda' if torch.cuda.is_available() else 'cpu'
 eval_iters = 200
-eval_interval = 100
+eval_interval = 500
 n_embd = 384
+n_head = 6
+n_layer = 6
+dropout = 0.2
 torch.manual_seed(1337)
 
 url = "https://raw.githubusercontent.com/karpathy/char-rnn/master/data/tinyshakespeare/input.txt"
@@ -72,13 +75,15 @@ def estimate_loss():
   model.train()
   return out
 
-class single_head_attention(nn.Module):
+class Head(nn.Module):
   def __init__(self,head_size):
     super().__init__()
     self.key=nn.Linear(n_embd,head_size,bias=False)
     self.query=nn.Linear(n_embd,head_size,bias=False)
     self.value=nn.Linear(n_embd,head_size,bias=False)
     self.register_buffer('tril',torch.tril(torch.ones(block_size,block_size)))
+    self.dropout=nn.Dropout(dropout)
+    
   def forward(self,x):
     B,T,C=x.shape
     k=self.key(x)
@@ -86,24 +91,66 @@ class single_head_attention(nn.Module):
     v=self.value(x)
     wei=q @ k.transpose(-2,-1) * C**-0.5
     wei=wei.masked_fill(self.tril[:T,:T]==0,float('-inf'))
-    probs=F.softmax(wei,dim=-1)
-    out=probs @ v
+    wei=F.softmax(wei,dim=-1)
+    wei=self.dropout(wei)
+    out=wei @ v
     return out
 
+class multi_head_attention(nn.Module):
+  def __init__(self,num_heads,head_size):
+    super().__init__()
+    self.heads=nn.ModuleList([Head(head_size) for _ in range(num_heads)])
+    self.proj=nn.Linear(n_embd,n_embd)
+    self.dropout=nn.Dropout(dropout)
+  def forward(self,x):
+    out=torch.cat([h(x) for h in self.heads],dim=-1)
+    out=self.dropout(self.proj(out))
+    return out
+
+class feed_forward(nn.Module):
+  def __init__(self,n_embd):
+    super().__init__()
+    self.net=nn.Sequential(
+        nn.Linear(n_embd,n_head*n_embd),
+        nn.ReLU(),
+        nn.Linear(n_head*n_embd,n_embd),
+        nn.Dropout(dropout)
+    )
+  def forward(self,x):
+    return self.net(x) 
+
+class block(nn.Module):
+  def __init__(self,n_embd,n_head):
+    super().__init__()
+    head_size=n_embd//n_head
+    self.sa_head=multi_head_attention(n_head,head_size)
+    self.ffwd=feed_forward(n_embd)
+    self.l1=nn.LayerNorm(n_embd) #B,T acts like B it is out normalization for each token depend only on feature of this token (C level)
+    self.l2=nn.LayerNorm(n_embd)
+  def forward(self,x):
+    #norm -->multihead attention -->norm-->feedforward    and there is residual 
+    x=x+self.sa_head(self.l1(x)) #residual connection 
+    x=x+self.ffwd(self.l2(x))
+    return x
+  
 class BigramLanguageModel(nn.Module):
   def __init__(self):
     super().__init__()
     self.token_embedding_table=nn.Embedding(vocab_size,n_embd)
     self.position_embedding_table=nn.Embedding(block_size,n_embd)
-    self.sa_head=single_head_attention(n_embd)
+    # self.sa_head=single_head_attention(n_embd)
+    # self.sa_head=multi_head_attention(4,n_embd//4)
+    # self.ffwd=feed_forward(n_embd)
+    self.blocks=block(n_embd,n_head)
     self.lm_head=nn.Linear(n_embd,vocab_size)
-
 
   def forward(self,idx,target=None):
     tok_emb=self.token_embedding_table(idx)
     pos_emb=self.position_embedding_table(torch.arange(T,device=device)) #(T,C)
     x=tok_emb+pos_emb
-    x=self.sa_head(x)
+    # x=self.sa_head(x)
+    # x=self.ffwd(x)
+    x=self.blocks(x)
     logits=self.lm_head(x)
     if target is None:
       loss=None
@@ -142,4 +189,5 @@ for iter in tqdm(range(max_iters)):
   loss.backward()
   optimizer.step()
   #generate from the model
-print(decode(m.generate(idx=torch.zeros((1,1), dtype=torch.long,device=device),max_new_tokens=500)[0].tolist()))
+with open('output.txt','w',encoding='utf-8') as f:
+  f.write(decode(m.generate(idx=torch.zeros((1,1), dtype=torch.long,device=device),max_new_tokens=10000)[0].tolist()))
